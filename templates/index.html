@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GoustoView</title>
+    <script type="text/javascript" src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        // sending a connect request to the server.
+	var socket = io.connect('{{wsUrl}}');
+
+	socket.on('init', function(data) {
+          console.log(data)
+          qrcode.makeCode(data['pushUrl']);
+          $('#img').empty()
+          $('#title').empty()
+	  $('#qrcode').fadeIn();
+        });
+
+	socket.on('push', function(data) {
+	  console.log(data)
+	  $('#qrcode').fadeOut();
+	  $('#img').prepend('<img id="rImg" src="'+data['img']+'" style="width: 75%"/>')
+          $('#title').prepend(data['title'])
+	});
+
+      });
+</script>
+</head>
+
+<body>
+
+  <div id="qrcode"></div>
+  <div id="title"></div>
+  <div id="img"></div>
+  <script>
+    var qrcode = new QRCode("qrcode");
+  </script>
+
+</body>
+</html>
+
+
